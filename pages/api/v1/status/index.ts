@@ -5,7 +5,7 @@ type StatusResponse = {
   chave: String;
 };
 
-async function status(request: NextApiRequest, response: NextApiResponse<StatusResponse>): void {
+async function status(request: NextApiRequest, response: NextApiResponse<StatusResponse>): Promise<void> {
   const result = await database.query("SELECT 1+1 as sum;");
   console.log(result.rows);
   
