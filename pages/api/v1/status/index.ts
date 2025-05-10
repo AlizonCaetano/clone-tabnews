@@ -1,4 +1,4 @@
-import database from "../../../../infra/database.ts";
+import database from "infra/database.ts";
 import { NextApiRequest, NextApiResponse } from "next";
 
 type StatusResponse = {
