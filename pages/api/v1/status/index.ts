@@ -8,23 +8,23 @@ async function status(
   const updatedAt = new Date().toISOString();
 
   const dbVersionResult = await database.query("SHOW server_version;");
-  const dbVersionValue = dbVersionResult.rows[0].server_version;
+  const { server_version } = dbVersionResult.rows[0];
 
   const dbMaxConnectionsResult = await database.query("SHOW max_connections;");
-  const dbMaxConnectionsValue = dbMaxConnectionsResult.rows[0].max_connections;
+  const { max_connections } = dbMaxConnectionsResult.rows[0];
 
   const dbOpenedConnectionsResult = await database.query("SELECT count(*)::int FROM pg_stat_activity;");
-  const dbOpenedConnectionsValue = dbOpenedConnectionsResult.rows[0].count;
+  const { count } = dbOpenedConnectionsResult.rows[0];
 
-  console.log(dbOpenedConnectionsValue);
+  console.log(count);
 
   response.status(200).json({
     update_at: updatedAt,
     dependencies: {
       database: {
-        version: dbVersionValue,
-        max_connections: parseInt(dbMaxConnectionsValue),
-        opened_connections: dbOpenedConnectionsValue
+        version: server_version,
+        max_connections: parseInt(max_connections),
+        opened_connections: count
       },
     },
   });
