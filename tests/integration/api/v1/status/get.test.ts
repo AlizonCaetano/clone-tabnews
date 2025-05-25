@@ -13,6 +13,6 @@ test("Get to /api/v1/status should return 200", async () => {
   const dbMaxConnections = responseBody.dependencies.database.max_connections;
   expect(dbMaxConnections).toEqual(100);
 
-  // const dbOpenedConn = responseBody.db_opened_conn.rows[0].count;
-  // expect(parseInt(dbOpenedConn)).toBeGreaterThan(0);
+  const dbOpenedConnections = responseBody.dependencies.database.opened_connections;
+  expect(dbOpenedConnections).toEqual(1);
 });
