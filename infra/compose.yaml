@@ -4,4 +4,4 @@ services:
     env_file:
       - ../.env.development
     ports:
-      - "65432:5432"
+      - "5432:5432"
