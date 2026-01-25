@@ -10,16 +10,17 @@
     "services:stop": "docker compose -f infra/compose.yaml stop",
     "lint:check": "prettier --check .",
     "lint:fix": "prettier --write .",
-    "test": "jest",
-    "test:watch": "jest --watchAll",
-    "migration:create": "node-pg-migrate --migrations-dir infra/migrations --migration-file-language ts create",
-    "migration:up": "node-pg-migrate --migrations-dir infra/migrations --envPath .env.development --tsconfig tsconfig.json up",
-    "migration:down": "node-pg-migrate --migrations-dir infra/migrations --envPath .env.development --tsconfig tsconfig.json down"
+    "test": "jest --runInBand",
+    "test:watch": "jest --watchAll --runInBand",
+    "migration:create": "node-pg-migrate --migrations-dir infra/migrations create",
+    "migration:up": "node-pg-migrate --migrations-dir infra/migrations --envPath .env.development up",
+    "migration:down": "node-pg-migrate --migrations-dir infra/migrations --envPath .env.development down"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "dotenv": "^16.4.4",
+    "dotenv-expand": "^11.0.6",
     "next": "^13.1.6",
     "node-pg-migrate": "^6.2.2",
     "pg": "^8.11.3",

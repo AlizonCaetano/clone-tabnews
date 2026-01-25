@@ -1,7 +1,7 @@
 import database from "infra/database.ts";
 import { NextApiRequest, NextApiResponse } from "next";
 
-async function status(
+export default async function status(
   request: NextApiRequest,
   response: NextApiResponse,
 ): Promise<void> {
@@ -16,7 +16,7 @@ async function status(
   const dbName = process.env.POSTGRES_DB;
   const dbOpenedConnectionsResult = await database.query({
     text: "SELECT count(*)::int FROM pg_stat_activity WHERE datname= $1;",
-    values: [dbName]
+    values: [dbName],
   });
   const { count } = dbOpenedConnectionsResult.rows[0];
 
@@ -26,10 +26,8 @@ async function status(
       database: {
         version: server_version,
         max_connections: parseInt(max_connections),
-        opened_connections: count
+        opened_connections: count,
       },
     },
   });
 }
-
-export default status;

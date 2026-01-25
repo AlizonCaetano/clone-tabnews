@@ -1,4 +1,4 @@
-test("Get to /api/v1/status should return 200", async () => {
+test("GET to /api/v1/status should return 200", async () => {
   const response = await fetch("http://localhost:3000/api/v1/status");
   expect(response.status).toBe(200);
 
@@ -13,6 +13,7 @@ test("Get to /api/v1/status should return 200", async () => {
   const dbMaxConnections = responseBody.dependencies.database.max_connections;
   expect(dbMaxConnections).toEqual(100);
 
-  const dbOpenedConnections = responseBody.dependencies.database.opened_connections;
+  const dbOpenedConnections =
+    responseBody.dependencies.database.opened_connections;
   expect(dbOpenedConnections).toEqual(1);
 });
