@@ -15,7 +15,7 @@ async function query(queryObject: string | QueryConfig<any[]>) {
   }
 }
 
-async function getNewClient(){
+async function getNewClient(): Promise<Client> {
   const client = new Client({
     host: process.env.POSTGRES_HOST,
     port: Number(process.env.POSTGRES_PORT),

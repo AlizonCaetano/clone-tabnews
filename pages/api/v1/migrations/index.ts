@@ -1,7 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import migrationsRunner from "node-pg-migrate";
+import migrationsRunner, { Direction } from "node-pg-migrate";
 import { join } from "node:path";
 import database from "infra/database"
+import { Client } from "pg";
 
 export default async function migrations(
   request: NextApiRequest,
@@ -9,7 +10,13 @@ export default async function migrations(
 ): Promise<void> {
   const dbClient = await database.getNewClient();
 
-  const defaultMigrationsOptions = {
+  const defaultMigrationsOptions: {
+    dbClient: Client,
+    dir: string,
+    direction: Direction,
+    verbose: boolean,
+    migrationsTable: string,
+  } = {
     dbClient: dbClient,
     dir: join("infra", "migrations"),
     direction: "up",
