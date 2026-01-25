@@ -1,6 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import migrationsRunner from "node-pg-migrate";
-import Direction from "node-pg-migrate";
 import { join } from "node:path";
 import database from "infra/database"
 import { Client } from "pg";
@@ -14,7 +13,7 @@ export default async function migrations(
   const defaultMigrationsOptions: {
     dbClient: Client,
     dir: string,
-    direction: Direction,
+    direction: "up" | "down",
     verbose: boolean,
     migrationsTable: string,
   } = {
