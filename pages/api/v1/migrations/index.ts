@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import migrationsRunner, { Direction } from "node-pg-migrate";
+import migrationsRunner, Direction from "node-pg-migrate";
 import { join } from "node:path";
 import database from "infra/database"
 import { Client } from "pg";
