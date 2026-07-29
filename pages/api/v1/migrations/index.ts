@@ -1,57 +1,67 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import migrationsRunner from "node-pg-migrate";
 import { join } from "node:path";
-import database from "infra/database"
+import database from "infra/database";
 import { Client } from "pg";
 
 export default async function migrations(
   request: NextApiRequest,
   response: NextApiResponse,
 ): Promise<void> {
-  const dbClient = await database.getNewClient();
-
-  const defaultMigrationsOptions: {
-    dbClient: Client,
-    dir: string,
-    direction: "up" | "down",
-    verbose: boolean,
-    migrationsTable: string,
-  } = {
-    dbClient: dbClient,
-    dir: join("infra", "migrations"),
-    direction: "up",
-    verbose: true,
-    migrationsTable: "pgmigrations",
-  };
-
-  if (request.method === "GET") {
-    const pendingMigrations = await migrationsRunner({
-      ...defaultMigrationsOptions,
-      dryRun: true,
+  const allowedMethods = ["GET", "POST"];
+  if (!allowedMethods.includes(request.method)) {
+    response.status(405).end({
+      error: `Method "${request.method}" not allowed`,
     });
-    await dbClient.end();
-
-    response.status(200).json(pendingMigrations);
     return;
   }
 
-  if (request.method === "POST") {
-    const migratedMigrations = await migrationsRunner({
-      ...defaultMigrationsOptions,
-      dryRun: false,
-    });
-    await dbClient.end();
+  let dbClient: Client;
 
+  try {
+    dbClient = await database.getNewClient();
 
-    if (migratedMigrations.length > 0) {
-      response.status(201).json(migratedMigrations);
+    const defaultMigrationsOptions: {
+      dbClient: Client;
+      dir: string;
+      direction: "up" | "down";
+      verbose: boolean;
+      migrationsTable: string;
+    } = {
+      dbClient: dbClient,
+      dir: join("infra", "migrations"),
+      direction: "up",
+      verbose: true,
+      migrationsTable: "pgmigrations",
+    };
+
+    if (request.method === "GET") {
+      const pendingMigrations = await migrationsRunner({
+        ...defaultMigrationsOptions,
+        dryRun: true,
+      });
+
+      response.status(200).json(pendingMigrations);
       return;
     }
 
-    response.status(200).json(migratedMigrations);
-    return;
-  }
+    if (request.method === "POST") {
+      const migratedMigrations = await migrationsRunner({
+        ...defaultMigrationsOptions,
+        dryRun: false,
+      });
 
-  response.status(405).end();
-  return;
+      if (migratedMigrations.length > 0) {
+        response.status(201).json(migratedMigrations);
+        return;
+      }
+
+      response.status(200).json(migratedMigrations);
+      return;
+    }
+  } catch (error) {
+    console.error(error);
+  } finally {
+    await dbClient.end();
+  }
 }

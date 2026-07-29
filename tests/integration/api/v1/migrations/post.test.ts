@@ -1,4 +1,5 @@
 import database from "infra/database.ts";
+import { expect, test, beforeAll } from "@jest/globals";
 
 beforeAll(cleanDatabase);
 
